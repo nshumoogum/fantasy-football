@@ -22,6 +22,7 @@ func (api *API) makeGetRequest(ctx context.Context, method, url string) ([]byte,
 		log.ErrorCtx(ctx, errors.WithMessage(err, "failed to create request for fantasy football api"), logData)
 		return nil, err
 	}
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36")
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := api.Client.Do(req)
@@ -31,15 +32,11 @@ func (api *API) makeGetRequest(ctx context.Context, method, url string) ([]byte,
 	}
 	defer resp.Body.Close()
 
-	log.Info("whats happening", log.Data{"status": resp.Status, "request": resp.Request})
-
-	jsonBody, err := ioutil.ReadAll(resp.Body)
+	responseBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.ErrorCtx(ctx, errors.WithMessage(err, "failed to read body from fantasy football api"), logData)
 		return nil, err
 	}
 
-	log.Debug("jsonBody?", log.Data{"json": jsonBody})
-
-	return jsonBody, nil
+	return responseBody, nil
 }

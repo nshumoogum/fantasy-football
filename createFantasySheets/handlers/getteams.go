@@ -19,7 +19,7 @@ func (api *API) GetTeams(ctx context.Context, connection *os.File, filename stri
 
 	// Loop through list of teams
 	for _, team := range teams {
-		path := api.URI + "/entry/" + strconv.Itoa(team.Entry) + "/event" + strconv.Itoa(event) + "/picks"
+		path := api.URI + "/entry/" + strconv.Itoa(team.Entry) + "/event/" + strconv.Itoa(event) + "/picks"
 		logData := log.Data{"url": path, "method": method}
 
 		URL, err := url.Parse(path)
@@ -35,8 +35,8 @@ func (api *API) GetTeams(ctx context.Context, connection *os.File, filename stri
 			return err
 		}
 
-		var teamData *models.Team
-		if err = json.Unmarshal(b, teamData); err != nil {
+		var teamData models.Team
+		if err = json.Unmarshal(b, &teamData); err != nil {
 			log.ErrorCtx(ctx, errors.WithMessage(err, "unable to unmarshal bytes into team data resource"), logData)
 			return err
 		}

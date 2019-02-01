@@ -31,14 +31,14 @@ func (api *API) GetLeague(ctx context.Context, leagueID string, page int) (*mode
 		return nil, err
 	}
 
-	var resource *models.Resource
-	if err = json.Unmarshal(b, resource); err != nil {
+	var resource models.Resource
+	if err = json.Unmarshal(b, &resource); err != nil {
 		log.ErrorCtx(ctx, errors.WithMessage(err, "unable to unmarshal bytes into league resource"), logData)
 		return nil, err
 	}
 
 	// Check and retrieve other pages
-	if resource.Standings.HasNext {
+	if resource.Standings != nil && resource.Standings.HasNext {
 		page++
 		next, err := api.GetLeague(ctx, leagueID, page)
 		if err != nil {
@@ -48,5 +48,7 @@ func (api *API) GetLeague(ctx context.Context, leagueID string, page int) (*mode
 		resource.Standings.Results = append(resource.Standings.Results, next.Standings.Results...)
 	}
 
-	return resource, nil
+	log.Info("league data", log.Data{"resource": resource})
+
+	return &resource, nil
 }
