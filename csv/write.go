@@ -4,8 +4,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/ONSdigital/go-ns/log"
-	"github.com/pkg/errors"
+	"github.com/ONSdigital/log.go/log"
 )
 
 func writeToFile(ctx context.Context, connection *os.File, filename string, line string) error {
@@ -15,7 +14,7 @@ func writeToFile(ctx context.Context, connection *os.File, filename string, line
 	}
 	_, err := connection.WriteString(line + "\n")
 	if err != nil {
-		log.ErrorCtx(ctx, errors.WithMessage(err, "error writing to file"), logData)
+		log.Event(ctx, "error writing to file", log.ERROR, log.Error(err), logData)
 		return err
 	}
 

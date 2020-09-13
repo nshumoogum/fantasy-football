@@ -6,21 +6,20 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/ONSdigital/go-ns/log"
-	"github.com/nshumoogum/fantasy-football/createFantasySheets/models"
-	"github.com/pkg/errors"
+	"github.com/ONSdigital/log.go/log"
+	"github.com/nshumoogum/fantasy-football/models"
 )
 
 // GetLeague retrieves league data from fantasy football site
 func (api *API) GetLeague(ctx context.Context, leagueID string, page int) (*models.Resource, error) {
 	method := "GET"
 	pageString := strconv.Itoa(page)
-	path := api.URI + "/leagues-classic-standings/" + leagueID + "?ls-page=" + pageString
+	path := api.URI + "/leagues-classic/" + leagueID + "/standings/?page_standings=" + pageString
 	logData := log.Data{"url": path, "method": method}
 
 	URL, err := url.Parse(path)
 	if err != nil {
-		log.ErrorCtx(ctx, errors.WithMessage(err, "failed to create url for api call"), logData)
+		log.Event(ctx, "failed to create url for api call", log.ERROR, log.Error(err), logData)
 		return nil, err
 	}
 	path = URL.String()
@@ -33,7 +32,7 @@ func (api *API) GetLeague(ctx context.Context, leagueID string, page int) (*mode
 
 	var resource models.Resource
 	if err = json.Unmarshal(b, &resource); err != nil {
-		log.ErrorCtx(ctx, errors.WithMessage(err, "unable to unmarshal bytes into league resource"), logData)
+		log.Event(ctx, "unable to unmarshal bytes into league resource", log.ERROR, log.Error(err), logData)
 		return nil, err
 	}
 
@@ -48,7 +47,7 @@ func (api *API) GetLeague(ctx context.Context, leagueID string, page int) (*mode
 		resource.Standings.Results = append(resource.Standings.Results, next.Standings.Results...)
 	}
 
-	log.Info("league data", log.Data{"resource": resource})
+	log.Event(ctx, "successfully got league", log.INFO, log.Data{"resource": resource})
 
 	return &resource, nil
 }
