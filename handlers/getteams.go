@@ -7,10 +7,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/ONSdigital/go-ns/log"
-	"github.com/nshumoogum/fantasy-football/createFantasySheets/csv"
-	"github.com/nshumoogum/fantasy-football/createFantasySheets/models"
-	"github.com/pkg/errors"
+	"github.com/ONSdigital/log.go/log"
+	"github.com/nshumoogum/fantasy-football/csv"
+	"github.com/nshumoogum/fantasy-football/models"
 )
 
 // GetTeams retrieves a list of team data and adds the data to csv
@@ -19,12 +18,12 @@ func (api *API) GetTeams(ctx context.Context, connection *os.File, filename stri
 
 	// Loop through list of teams
 	for _, team := range teams {
-		path := api.URI + "/entry/" + strconv.Itoa(team.Entry) + "/event/" + strconv.Itoa(event) + "/picks"
+		path := api.URI + "/entry/" + strconv.Itoa(team.Entry) + "/event/" + strconv.Itoa(event) + "/picks/"
 		logData := log.Data{"url": path, "method": method}
 
 		URL, err := url.Parse(path)
 		if err != nil {
-			log.ErrorCtx(ctx, errors.WithMessage(err, "failed to create url for api call"), logData)
+			log.Event(ctx, "failed to create url for api call", log.ERROR, log.Error(err), logData)
 			return err
 		}
 		path = URL.String()
@@ -37,7 +36,7 @@ func (api *API) GetTeams(ctx context.Context, connection *os.File, filename stri
 
 		var teamData models.Team
 		if err = json.Unmarshal(b, &teamData); err != nil {
-			log.ErrorCtx(ctx, errors.WithMessage(err, "unable to unmarshal bytes into team data resource"), logData)
+			log.Event(ctx, "unable to unmarshal bytes into team data resource", log.ERROR, log.Error(err), logData)
 			return err
 		}
 

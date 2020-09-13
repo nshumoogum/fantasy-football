@@ -7,19 +7,21 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/ONSdigital/go-ns/log"
-	"github.com/nshumoogum/fantasy-football/createFantasySheets/csv"
-	"github.com/nshumoogum/fantasy-football/createFantasySheets/handlers"
+	"github.com/ONSdigital/log.go/log"
+	"github.com/nshumoogum/fantasy-football/csv"
+	"github.com/nshumoogum/fantasy-football/handlers"
 	"github.com/pkg/errors"
 )
 
 var (
 	ctx context.Context
 
-	eventWeek     = 0
-	leagueID      = "66205"
-	url           = "https://fantasy.premierleague.com/drf"
-	fileExtension = ".csv"
+	defaultLeagueID      = "414763"
+	defaultURL           = "https://fantasy.premierleague.com/api"
+	defaultFileExtension = ".csv"
+
+	fileExtension, leagueID, url string
+	eventWeek                    int
 )
 
 func main() {
@@ -37,21 +39,31 @@ func main() {
 
 	ctx = context.Background()
 
-	var missingFlags bool
 	if eventWeek < 1 {
-		log.ErrorCtx(ctx, errors.New("event-week is not set or is set to less than 1"), logData)
-		missingFlags = true
-	}
-
-	if missingFlags {
+		log.Event(ctx, "event-week is not set or is set to less than 1", log.ERROR, log.Error(errors.New("flag event-week not set")), logData)
 		os.Exit(1)
 	}
 
-	filename := "week-" + strconv.Itoa(eventWeek) + fileExtension
+	if fileExtension == "" {
+		log.Event(ctx, "file-extension is not set, using default", log.WARN, log.Error(errors.New("flag file-extension not set")), logData)
+		fileExtension = defaultFileExtension
+	}
+
+	if leagueID == "" {
+		log.Event(ctx, "league-id is not set, using default", log.WARN, log.Error(errors.New("flag league-id not set")), logData)
+		leagueID = defaultLeagueID
+	}
+
+	if url == "" {
+		log.Event(ctx, "(fantasy football) url is not set, using default", log.WARN, log.Error(errors.New("flag url not set")), logData)
+		url = defaultURL
+	}
+
+	filename := "files/week-" + strconv.Itoa(eventWeek) + fileExtension
 
 	connection, err := os.OpenFile(filename, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {
-		log.ErrorCtx(ctx, errors.WithMessage(err, "error opening file"), logData)
+		log.Event(ctx, "error opening file", log.ERROR, log.Error(err), logData)
 		os.Exit(1)
 	}
 

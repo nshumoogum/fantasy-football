@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nshumoogum/fantasy-football/createFantasySheets/models"
+	"github.com/nshumoogum/fantasy-football/models"
 )
 
 // CreateTeam ...
