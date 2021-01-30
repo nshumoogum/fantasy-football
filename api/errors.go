@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/ONSdigital/go-ns/log"
+	"github.com/ONSdigital/log.go/log"
 	"github.com/nshumoogum/fantasy-football/models"
-	"github.com/pkg/errors"
 
 	errs "github.com/nshumoogum/fantasy-football/apierrors"
 )
@@ -24,7 +23,7 @@ func ErrorResponse(ctx context.Context, w http.ResponseWriter, status int, error
 	w.WriteHeader(status)
 
 	if _, err := w.Write(b); err != nil {
-		log.ErrorCtx(ctx, errors.WithMessage(err, "failed to write error response body"), nil)
+		log.Event(ctx, "failed to write error response body", log.ERROR, log.Error(err), nil)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
