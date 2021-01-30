@@ -14,15 +14,27 @@ EXTENSION = $(if $(FILE_EXTENSION),$(FILE_EXTENSION),$(DEFAULT_EXTENSION))
 LID = $(if $(LEAGUE_ID),$(LEAGUE_ID),$(DEFAULT_LID))
 
 CREATE_FANTASY_SHEETS=createFantasySheets
+FANTASY_FOOTBAL_API=fantasyFootballAPI
 
-build:
+.PHONEY: script-build
+script-build:
 	@mkdir -p $(BUILD)/$(BIN_DIR)
 	go build -o $(BUILD)/$(BIN_DIR)/$(CREATE_FANTASY_SHEETS) cmd/$(CREATE_FANTASY_SHEETS)/main.go
 
-debug: build
+.PHONEY: api-build
+api-build:
+	@mkdir -p $(BUILD)/$(BIN_DIR)
+	go build -o $(BUILD)/$(BIN_DIR)/$(FANTASY_FOOTBAL_API) cmd/$(FANTASY_FOOTBAL_API)/main.go
+
+.PHONEY: script
+script: script-build
 	HUMAN_LOG=1 go run -race cmd/$(CREATE_FANTASY_SHEETS)/main.go -event-week=$(EVENT) -league-id=$(LID) -file-extension=$(EXTENSION) -url=$(URL)
 
+.PHONEY: api
+api: script-build
+	HUMAN_LOG=1 go run -race cmd/$(FANTASY_FOOTBAL_API)/main.go
+
+.PHONEY: test
 test:
 	go test -race -cover ./...
 
-.PHONEY: test build debug

@@ -25,7 +25,7 @@ Once you have setup go, you can run the script using either of the following:
 Or
 
 * Setup environment variables, using `export EVENT_WEEK={integer value}` and `export LEAGUE_ID={the league ID you are interested in}`
-* Then run `make debug`
+* Then run `make script`
 
 This shall take several seconds to complete and will generate a file (default extension to csv) containing a list of all teams of a division and the total points they received in that week. The file will contain data on the following headers for each team:
 

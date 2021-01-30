@@ -18,7 +18,7 @@ func CreateTeam(ctx context.Context, connection *os.File, filename string, team 
 		strconv.Itoa(teamData.EventTransfersCost) + "," +
 		strconv.Itoa(teamData.Points)
 
-	if err = writeToFile(ctx, connection, filename, teamLine); err != nil {
+	if err = writeFile(ctx, connection, filename, teamLine); err != nil {
 		return
 	}
 
