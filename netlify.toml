@@ -1,0 +1,6 @@
+[build]
+  base = "/"
+  command = "make build"
+
+[build.environment]
+  GO_VERSION = "1.19.6"
