@@ -14,6 +14,8 @@ Download repository
 * Copy repo using clone with ssh or https in `Code` dropdown
 * On commandline run `git clone <paste copy of url>`
 
+See full list of make targets with `make help` 
+
 ## Create Fantasy Sheets
 
 This script is to generate a csv file containing data obtained from the [fantasy football website](https://fantasy.premierleague.com/) for all teams within a league during a particular round.

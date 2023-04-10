@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/ONSdigital/log.go/log"
@@ -14,7 +14,7 @@ type API struct {
 	URI    string
 }
 
-func (api *API) makeGetRequest(ctx context.Context, method, url string) ([]byte, error) {
+func (api *API) makeGetRequest(ctx context.Context, method, url string) (io.ReadCloser, error) {
 	logData := log.Data{"url": url, "method": method}
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
@@ -29,13 +29,6 @@ func (api *API) makeGetRequest(ctx context.Context, method, url string) ([]byte,
 		log.Event(ctx, "failed to action fantasy football api", log.ERROR, log.Error(err), logData)
 		return nil, err
 	}
-	defer resp.Body.Close()
 
-	responseBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Event(ctx, "failed to read body from fantasy football api", log.ERROR, log.Error(err), logData)
-		return nil, err
-	}
-
-	return responseBody, nil
+	return resp.Body, nil
 }

@@ -35,7 +35,7 @@ type Service struct {
 // New creates a new service
 func New(cfg *config.Configuration) *Service {
 	svc := &Service{
-		api:    &api.FantasyFootballAPI{},
+		api:    &api.FantasyFootballAPI{FPLURL: cfg.FPLURL},
 		config: cfg,
 	}
 

@@ -46,7 +46,7 @@ func (api *FantasyFootballAPI) getDownload(w http.ResponseWriter, req *http.Requ
 	client := &http.Client{}
 	fplAPI := &handlers.API{
 		Client: client,
-		URI:    "https://fantasy.premierleague.com/api",
+		URI:    api.FPLURL,
 	}
 
 	league, err := fplAPI.GetLeague(ctx, leagueID, 1)
@@ -80,16 +80,26 @@ func (api *FantasyFootballAPI) getDownload(w http.ResponseWriter, req *http.Requ
 	}
 
 	openfile, err := os.Open(filename)
+	if err != nil {
+		log.Event(ctx, "failed to open file", log.ERROR, log.Error(err), logData)
+		errorObjects = append(errorObjects, &models.ErrorObject{Error: errs.ErrInternalServer.Error()})
+		ErrorResponse(ctx, w, http.StatusInternalServerError, &models.ErrorResponse{Errors: errorObjects})
+	}
+
 	fileSize := strconv.FormatInt(fileStat.Size(), 10)
-	// FileContentType := http.DetectContentType()
 
 	// Send the headers before sending the file
 	w.Header().Set("Content-Disposition", "attachment; filename="+filename)
 	w.Header().Set("Content-Type", "text/csv")
 	w.Header().Set("Content-Length", fileSize)
 
-	//Send the file
-	io.Copy(w, openfile)
+	// Send the file
+	_, err = io.Copy(w, openfile)
+	if err != nil {
+		log.Event(ctx, "failed to download file", log.ERROR, log.Error(err), logData)
+		errorObjects = append(errorObjects, &models.ErrorObject{Error: errs.ErrInternalServer.Error()})
+		ErrorResponse(ctx, w, http.StatusInternalServerError, &models.ErrorResponse{Errors: errorObjects})
+	}
 
 	// TODO shouldn't need to remove files off disc (we shouldn't be storing files on disc in the first place)
 	if err := os.Remove(filename); err != nil {

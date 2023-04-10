@@ -29,13 +29,15 @@ func (api *API) GetTeams(ctx context.Context, connection *os.File, filename stri
 		path = URL.String()
 		logData["url"] = path
 
-		b, err := api.makeGetRequest(ctx, method, path)
+		body, err := api.makeGetRequest(ctx, method, path)
 		if err != nil {
 			return err
 		}
+		defer body.Close()
 
 		var teamData models.Team
-		if err = json.Unmarshal(b, &teamData); err != nil {
+
+		if err := json.NewDecoder(body).Decode(&teamData); err != nil {
 			log.Event(ctx, "unable to unmarshal bytes into team data resource", log.ERROR, log.Error(err), logData)
 			return err
 		}

@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"io"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/ONSdigital/log.go/log"
@@ -35,7 +34,7 @@ func DrainBody(r *http.Request) {
 		return
 	}
 
-	_, err := io.Copy(ioutil.Discard, r.Body)
+	_, err := io.Copy(io.Discard, r.Body)
 	if err != nil {
 		log.Event(r.Context(), "error draining request body", log.Error(err))
 	}

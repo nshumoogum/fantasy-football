@@ -24,9 +24,9 @@ func writeFile(ctx context.Context, file *os.File, filename, line string) error 
 	return nil
 }
 
-// TODO use this method to create csv in memory instead of writing to disc and removing
+//nolint:all - TODO use this method to create csv in memory instead of writing to disc and removing
 func writeAll(records [][]string) ([]byte, error) {
-	if records == nil || len(records) == 0 {
+	if len(records) == 0 {
 		return nil, errors.New("records cannot be nil or empty")
 	}
 	var buf bytes.Buffer

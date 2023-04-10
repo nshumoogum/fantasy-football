@@ -25,13 +25,14 @@ func (api *API) GetLeague(ctx context.Context, leagueID string, page int) (*mode
 	path = URL.String()
 	logData["url"] = path
 
-	b, err := api.makeGetRequest(ctx, method, path)
+	body, err := api.makeGetRequest(ctx, method, path)
 	if err != nil {
 		return nil, err
 	}
+	defer body.Close()
 
 	var resource models.Resource
-	if err = json.Unmarshal(b, &resource); err != nil {
+	if err := json.NewDecoder(body).Decode(&resource); err != nil {
 		log.Event(ctx, "unable to unmarshal bytes into league resource", log.ERROR, log.Error(err), logData)
 		return nil, err
 	}
