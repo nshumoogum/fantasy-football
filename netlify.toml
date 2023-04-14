@@ -2,6 +2,7 @@
   base = "/"
   command = "make api-build"
   functions = "build"
+  publish = "build"
 
 [build.environment]
   GO_VERSION = "1.19.6"
