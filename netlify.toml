@@ -1,6 +1,9 @@
 [build]
   base = "/"
-  command = "make build"
+  command = "make api-build"
+  functions = "build"
 
 [build.environment]
   GO_VERSION = "1.19.6"
+  GO_IMPORT_PATH = "https://github.com/nshumoogum/fantasy-football"
+  GOBIN = "/opt/build/repo/build"
