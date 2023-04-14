@@ -23,7 +23,7 @@ func Get() (*Configuration, error) {
 	}
 
 	cfg = &Configuration{
-		BindAddr:                ":8080",
+		BindAddr:                "0.0.0.0:8080",
 		FPLURL:                  "https://fantasy.premierleague.com/api",
 		GracefulShutdownTimeout: 5 * time.Second,
 	}
