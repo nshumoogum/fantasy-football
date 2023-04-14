@@ -24,7 +24,7 @@ func NewFantasyFootballAPI(ctx context.Context, fplURL string, router *mux.Route
 
 	log.Event(ctx, "API and routing setup", log.INFO)
 
-	api.Router.HandleFunc("/healthz", api.getHealth).Methods("GET")
+	api.Router.HandleFunc("/health", api.getHealth).Methods("GET")
 	api.Router.HandleFunc("/test", api.getTest).Methods("GET")
 	api.Router.HandleFunc("/league-id/{id}/week/{event-week}", api.getDownload).Methods("GET")
 
