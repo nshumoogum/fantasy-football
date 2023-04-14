@@ -55,6 +55,10 @@ lint: ## Use locally to run linters against Go code
 fmt: ## Run Go formatting on code
 	go fmt ./...
 
+.PHONEY: run
+run:
+	$(BUILD)/$(BIN_DIR)/$(FANTASY_FOOTBAL_API)
+
 .PHONEY: script-build
 script-build: ## Builds binary of the fpl script and stores in build directory
 	@mkdir -p $(BUILD)/$(BIN_DIR)
