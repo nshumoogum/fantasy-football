@@ -44,6 +44,8 @@ func New(cfg *config.Configuration) *Service {
 
 // Run the service
 func (svc *Service) Run(ctx context.Context, svcErrors chan error) (err error) {
+	log.Event(ctx, "starting service", log.INFO)
+
 	// Get HTTP router and server with middleware
 	router := mux.NewRouter()
 	svc.api = api.NewFantasyFootballAPI(ctx, svc.api.FPLURL, router)

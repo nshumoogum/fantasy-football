@@ -15,6 +15,8 @@ import (
 )
 
 func (api *FantasyFootballAPI) getDownload(w http.ResponseWriter, req *http.Request) {
+	log.Event(req.Context(), "get download endpoint called", log.INFO)
+
 	defer DrainBody(req)
 	ctx := req.Context()
 
